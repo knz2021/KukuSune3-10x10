@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ククスネ3</title>
+    <title>ククスネ10x10</title>
     <style>
         * {
             margin: 0;
@@ -137,7 +137,7 @@
     </style>
 </head>
 <body>
-    <h1>ククスネ3</h1>
+    <h1>ククスネ10x10</h1>
     <div id="difficulty-selection">
         <button onclick="selectDifficulty('easy')">イージーモード</button>
         <button onclick="selectDifficulty('normal')">ノーマルモード</button>
@@ -233,29 +233,31 @@
         let gameOverReason = "";
         let currentQuestion = { num1: 0, num2: 0, result: 0 };
 
-        // 敵蛇初期化
+        // 敵蛇初期化（プレイヤーの初期位置と一定の距離を離す）
         function initEnemySnakes() {
-            enemySnakes.forEach((enemy, index) => {
-                enemy.body = [];
-                
-                // それぞれの蛇の開始位置を少しずらす
-                const startX = Math.floor(Math.random() * (tileCount - 10)) + 5;
-                const startY = Math.floor(Math.random() * (tileCount - 10)) + 5;
-                
-                // 進行方向を3匹でそれぞれ変える
-                const directions = [[1, 0], [-1, 0], [0, 1]]; // 右、左、下
-                const [dirX, dirY] = directions[index];
-                
-                for(let i = 0; i < 5; i++) {
-                    enemy.body.push({ 
-                        x: startX + (i * dirX),
-                        y: startY + (i * dirY)
-                    });
-                }
-                enemy.dx = dirX;
-                enemy.dy = dirY;
+        enemySnakes.forEach((enemy, index) => {
+            enemy.body = [];
+        
+        let startX, startY;
+        let safeDistance = 5; // プレイヤーと最低限離す距離
+        do {
+            startX = Math.floor(Math.random() * (tileCount - 10)) + 5;
+            startY = Math.floor(Math.random() * (tileCount - 10)) + 5;
+        } while (Math.abs(startX - snake[0].x) < safeDistance && Math.abs(startY - snake[0].y) < safeDistance);
+
+        const directions = [[1, 0], [-1, 0], [0, 1]];
+        const [dirX, dirY] = directions[index];
+
+        for(let i = 0; i < 5; i++) {
+            enemy.body.push({ 
+                x: startX + (i * dirX),
+                y: startY + (i * dirY)
             });
         }
+        enemy.dx = dirX;
+        enemy.dy = dirY;
+    });
+}
 
         // 敵蛇移動
         function moveEnemies() {
